@@ -5,6 +5,19 @@
 
 
 def print_hi(name):
+    #TIPS for pushing and pulling to the main set
+    #MUST COMMIT TO YOUR LOCAL (MINE IS MAIN LOCAL) first
+    #Steps to Push a File all the way to the github branch (jsr_branch)
+    #   1) Add All Desired Files to Local Branch
+    #       i)This is where you will describe your changes
+    #   2) Go into push menu and select the branch (jsr_branch)
+    #   3) Select what you would like to push to that branch
+    #   4) Push it up!
+    #Steps to pull
+    #   1) Go to git options and select
+    #   2) Pick which branch you would like to pull from (jsr_branch/main)
+    #   3) pull from there
+    #
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
     test = 5
