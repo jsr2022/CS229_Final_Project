@@ -17,7 +17,8 @@ def print_hi(name):
     #   1) Go to git options and select
     #   2) Pick which branch you would like to pull from (jsr_branch/main)
     #   3) pull from there
-    #
+    #Steps to Update
+    #select update and generally the merge step is best
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
     test = 5
