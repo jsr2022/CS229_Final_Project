@@ -27,7 +27,17 @@ def print_hi(name):
 if __name__ == '__main__':
     #print_hi('PyCharm')
     file_path = r"C:\Users\jonat\PycharmProjects\CS229_Final_Project\CS229_Final_Project\Music_Wavs\Vladimir Horowitz\Horowitz - The Last Recording\\"
-    song_name = ["01 Haydn- Piano Sonata #59 In E Flat, H 16-49 - 1. Allegro.wav"]
+    sn1 = "01 Haydn- Piano Sonata #59 In E Flat, H 16-49 - 1. Allegro.wav"
+    sn2 = "02 Haydn- Piano Sonata #59 In E Flat, H 16-49 - 2. Adagio E Cantabile.wav"
+    sn3 = "03 Haydn- Piano Sonata #59 In E Flat, H 16-49 - 3. Finale- Tempo Di Minuet.wav"
+    sn4 = "04 Chopin- Mazurka #3 In E, Op. 6-3.wav"
+    sn5 = "05 Chopin- Nocturne #16 In E Flat, Op. 55-2.wav"
+    sn6 = "06 Chopin- Impromptu #4 In C Sharp Minor, Op. 66, 'Fantaisie-Impromptu'.wav"
+    sn7 = "07 Chopin- Etude #1 In A Flat, Op. 25-1, 'Aeolian Harp'.wav"
+    sn8 = "08 Chopin- Etude #5 In E Minor, Op. 25-5.wav"
+    sn9 = "09 Chopin- Nocturne #17 In B, Op. 62-1.wav"
+    sn10= "10 Liszt- Weinen, Klagen, Sorgen, Zagen.wav"
+    song_name = [sn1, sn2, sn3, sn4, sn5, sn6, sn7, sn8, sn9, sn10]
     p1 = Pipeline(song_name, file_path)
     print(p1.list_sound_objects[0].attributes)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
