@@ -2,6 +2,7 @@
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from CS229_Final_Project.Pipeline import Pipeline
 
 
 def print_hi(name):
@@ -21,11 +22,12 @@ def print_hi(name):
     #select update and generally the merge step is best
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-    test = 5
-    test1 = 5
-    test22 = 4
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
+    #print_hi('PyCharm')
+    file_path = r"C:\Users\jonat\PycharmProjects\CS229_Final_Project\CS229_Final_Project\Music_Wavs\Vladimir Horowitz\Horowitz - The Last Recording\\"
+    song_name = ["01 Haydn- Piano Sonata #59 In E Flat, H 16-49 - 1. Allegro.wav"]
+    p1 = Pipeline(song_name, file_path)
+    print(p1.list_sound_objects[0].attributes)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
