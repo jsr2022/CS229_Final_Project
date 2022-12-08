@@ -1,12 +1,11 @@
+# Python Modules
 import numpy as np
-import pandas as pd
 import librosa
+import matplotlib.pyplot as plt
 import pydub
 import wave
-import pydub
 import scipy
-import matplotlib.pyplot as plt
-
+import pandas as pd
 
 class Sound_Analysis:
 
@@ -30,11 +29,11 @@ class Sound_Analysis:
         song_sample_rate = 1000
         librosa_audio_ts, sample_rate = librosa.load(path_and_song, sr=song_sample_rate, mono=bool_mono)
         fr_len = len(librosa_audio_ts)
-        # librosa_rms = librosa.feature.rms(y=librosa_audio_ts, frame_length=fr_len).T
-        # librosa_rms_norm = librosa.util.normalize(S=librosa_rms)
-        # t = np.linspace(0, (self.attributes['length'] / song_sample_rate), len(librosa_rms_norm))
-        self.librosa_rms_norm = 1 #librosa_rms_norm
-        self.librosa_rms_time = 1 #t
+        librosa_rms = librosa.feature.rms(y=librosa_audio_ts, frame_length=fr_len).T
+        librosa_rms_norm = librosa.util.normalize(S=librosa_rms)
+        t = np.linspace(0, (self.attributes['length'] / song_sample_rate), len(librosa_rms_norm))
+        self.librosa_rms_norm = librosa_rms_norm
+        self.librosa_rms_time = t
 
         chroma_cq = librosa.feature.chroma_cqt(y=librosa_audio_ts, sr=sample_rate, n_octaves=1)
         chroma_diff = np.diff(chroma_cq, n=1, axis=1)
@@ -42,7 +41,6 @@ class Sound_Analysis:
         self.chroma_max_dat = chroma_max_dat
         self.chroma_cq = chroma_cq
         #self.plot_rms(librosa_rms_norm, t)
-
 
     def attach_attributes(self, sound):
         self.attributes['num_channels'] = sound.channels
@@ -52,15 +50,6 @@ class Sound_Analysis:
         self.attributes['length'] = len(sound)  # in milliseconds
         self.attributes['frame_count'] = sound.frame_count()
         self.attributes['intensity'] = sound.max_dBFS
-
-    def plot_rms(self, rms, t):
-        plt.figure()
-        plt.plot(t, rms)
-        plt.title(self.song_name)
-        plt.xlabel("Song Time [S]")
-        plt.ylabel("Normalized RMS of Volume/Intensity")
-        #plt.savefig(self.song_name + ".png")
-        plt.show()
 
 
 
