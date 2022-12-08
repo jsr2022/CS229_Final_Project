@@ -1,11 +1,12 @@
+# Custom Files
+from CS229_Final_Project.Sound_Analysis import Sound_Analysis
+# Python Modules
 import os
 import glob
 import pickle
 import filetype
 import csv
 import numpy as np
-from CS229_Final_Project.Sound_Analysis import Sound_Analysis
-
 
 
 class Pipeline(object):
@@ -211,7 +212,8 @@ class Pipeline(object):
         j = 0
         for song in self.song_dictionary.keys():
             try:
-                indices[i] = label_dictionary[song]
+                label = label_dictionary[song]
+                indices[i] = self.song_dictionary[song]
                 i += 1
             except KeyError:
                 indices_no_data[j] = self.song_dictionary[song]
@@ -220,17 +222,21 @@ class Pipeline(object):
         return indices, indices_no_data
 
     def split_test_train(self, indices, train_percent):
-        if train_percent > 100:
+        if train_percent > 85:
             print("Training Percent is" + str(train_percent) + "% and is too high. ")
             train_percent = 85
             print("Training Percent set to: ")
 
         num_train = np.int(np.floor(indices.shape[0]*train_percent/100))
         num_test = indices.shape[0] - num_train
-        indices_to_train = np.random.randint(0, np.int(indices.shape[0]), num_train)
-        train_indices = indices[indices_to_train]
-        test_indices = set(indices.flatten()) - set(train_indices)
-        test_indices = np.array(test_indices)
+        permutes = np.random.permutation(np.int(indices.shape[0]))
+        indices_to_train = permutes[0:num_train]
+        indices_to_test = permutes[num_train:]
+        train_indices = indices[indices_to_train].astype(int)
+        test_indices = indices[indices_to_test].astype(int)
+
+        #test_indices = set(indices.flatten()) - set(train_indices)
+        #test_indices = np.array(test_indices)
 
         return test_indices, train_indices
 
@@ -266,9 +272,9 @@ class Pipeline(object):
         save_file.close()
 
         if pipeline_name == '':
-            file_pipeline = "pipeline_data.txt"
+            pipeline_name = "pipeline_data.txt"
 
-        save_pipeline = open(file_pipeline, 'wb')
+        save_pipeline = open(pipeline_name, 'wb')
         pipeline_list = [self.song_dictionary, self.songs, self.path]
         pickle.dump(pipeline_list, save_pipeline)
         save_pipeline.close()
