@@ -94,7 +94,7 @@ def degthree(x):
     return x_prime
 
 
-def poly_regression(x, y, learning_rate):
+def poly_regression(x, y, learning_rate, bound):
     x = monomializer(x)
     theta_0 = np.zeros(len(x[0]))
     s = np.zeros(len(x[0]))
@@ -111,12 +111,12 @@ def poly_regression(x, y, learning_rate):
         theta_1 = theta_0 + learning_rate * s
         #if i % 5 == 0:
             #print(np.linalg.norm(theta_1 - theta_0))
-        if np.linalg.norm(theta_1 - theta_0) < 1e-2:
+        if np.linalg.norm(theta_1 - theta_0) < bound:
             break
     return theta_1
 
 
-def degthree_regression(x, y, learning_rate):
+def degthree_regression(x, y, learning_rate, bound):
     x = degthree(x)
     theta_0 = np.zeros(len(x[0]))
     s = np.zeros(len(x[0]))
@@ -133,12 +133,12 @@ def degthree_regression(x, y, learning_rate):
         theta_1 = theta_0 + learning_rate * s
         #if i % 5 == 0:
             #print(np.linalg.norm(theta_1 - theta_0))
-        if np.linalg.norm(theta_1 - theta_0) < 1e-2:
+        if np.linalg.norm(theta_1 - theta_0) < bound:
             break
     return theta_1
 
 
-def linear_regression(x, y, learning_rate):
+def linear_regression(x, y, learning_rate, bound):
     # don't forget to add intercept term!
     x = np.append(np.ones((x.shape[0], 1)), x, axis=1)
     theta_0 = np.zeros(len(x[0]))
@@ -156,6 +156,6 @@ def linear_regression(x, y, learning_rate):
         theta_1 = theta_0 + learning_rate * s
         #if i % 5 == 0:
             #print(np.linalg.norm(theta_1-theta_0))
-        if np.linalg.norm(theta_1-theta_0) < 1e-10:
+        if np.linalg.norm(theta_1-theta_0) < bound:
             break
     return theta_1

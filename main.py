@@ -1,9 +1,11 @@
 # Custom Files
 from CS229_Final_Project.Pipeline import Pipeline
 from CS229_Final_Project import processing
+from CS229_Final_Project import Output_Calls
 # Python Modules
 import numpy as np
 import csv
+
 
 # TIPS for pushing and pulling to the main set
 # MUST COMMIT TO YOUR LOCAL (MINE IS MAIN LOCAL) first
@@ -70,8 +72,11 @@ if __name__ == '__main__':
     # ---------TRAINING and TESTING---------
     # Important Constants
     vol_max = 1000
-    vol_num_ranges = 1000
+    vol_num_ranges = 100
     pitch_num_ranges = 20
+    learning_rate = 0.01
+    linear_bound = 0.5e-3
+    poly_bound = 0.5e-3
 
     # ---------TRAINING---------
     songs = p2.list_sound_objects
@@ -113,51 +118,85 @@ if __name__ == '__main__':
 
     # ---------RUNNING ACTUAL ALGORITHMS---------
     # Regular Regression
-    theta_linear = processing.linear_regression(train, train_labels, 0.01)
+    theta_linear = processing.linear_regression(train, train_labels, learning_rate, linear_bound)
     # Poly Prediction
-    theta_poly = processing.poly_regression(train, train_labels, 0.01)
+    theta_poly = processing.poly_regression(train, train_labels, learning_rate, poly_bound)
 
     header = ['Theta Linear']
 
-    # with open('theta_linear.csv', 'w', encoding='UTF8', newline='') as f:
-    #     writer = csv.writer(f)
-    #     # write the header
-    #     writer.writerow(header)
-    #     # write multiple rows
-    #     all_song_names = ""
-    #     for i in range(len(theta_poly)):
-    #         writer.writerow(str(theta_poly[i]))
-    # f.close()
-    #
-    # header = ['Theta Polynomial']
-    # with open('theta_polynomial.csv', 'w', encoding='UTF8', newline='') as f:
-    #     writer = csv.writer(f)
-    #     # write the header
-    #     writer.writerow(header)
-    #     # write multiple rows
-    #     all_song_names = ""
-    #     for i in range(len(theta_poly)):
-    #         writer.writerow(str(theta_poly[i]))
-    # f.close()
+    with open('theta_linear1.csv', 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        # write the header
+        writer.writerow(header)
+        # write multiple rows
+        all_song_names = ""
+        for i in range(len(theta_linear)):
+            writer.writerow([str(theta_linear[i])])
+    f.close()
+
+    header = ['Theta Polynomial']
+    with open('theta_polynomial1.csv', 'w', encoding='UTF8', newline='') as f:
+        writer = csv.writer(f)
+        # write the header
+        writer.writerow(header)
+        # write multiple rows
+        all_song_names = ""
+        for i in range(len(theta_poly)):
+            writer.writerow([str(theta_poly[i])])
+    f.close()
 
 
-    # #print("Theta Linear Values:")
-    # for i in range(len(theta_linear)):
-    #     print(theta_linear[i])
-    # #print(" ")
-    #
-    # #print("Theta Poly Values:")
-    # for i in range(len(theta_poly)):
-    #     print(theta_poly[i])
-    # #print(" ")
 
     print("Test Results")
-    for i in range(len(test_indices)):
-        index = test_indices[j]
+    data_stuff = list()
+    res_arr = np.zeros((len(test_indices), 5))
+    res_stats = np.zeros((4,2))
+    for k in range(len(test_indices)):
+        index = test_indices[k]
         song = songs[index].song_name
-        print("Linear Reg " + str(song) + " predicted result: " + str(np.dot(theta_linear, test_linear[i])) + " actual result: " + str(test_labels[i]))
-        print("Poly Reg   " + str(song) + " predicted result: " + str(np.dot(theta_poly, processing.monomialize_single(test[i]))) + " actual result: " + str(test_labels[i]))
+        linear_predict = np.dot(theta_linear, test_linear[k])
+        poly_predict = np.dot(theta_poly, processing.monomialize_single(test[k]))
+
+        res_arr[k, 0] = linear_predict
+        res_arr[k, 1] = poly_predict
+        res_arr[k, 2] = test_labels[k]
+        res_arr[k, 3] = np.abs(linear_predict-test_labels[k])/test_labels[k]*100
+        res_arr[k, 4] = np.abs(poly_predict - test_labels[k]) / test_labels[k]*100
+
+
+        data_stuff.append([song, test_labels[k], linear_predict, poly_predict])
+        print("Linear Reg " + str(song) + " predicted result: " + str(linear_predict) + " actual result: " + str(test_labels[k]))
+        print("Poly Reg   " + str(song) + " predicted result: " + str(poly_predict) + " actual result: " + str(test_labels[k]))
     print(" ")
+
+    res_stats[0, 0] = np.abs(np.mean(res_arr[:, 0]-res_arr[:, 2]))  # Linear Mean Error
+    res_stats[0, 1] = np.abs(np.mean(res_arr[:, 1]-res_arr[:, 2]))  # Poly Mean Error
+    res_stats[1, 0] = np.mean(res_arr[:, 3])  # Linear Mean % Error
+    res_stats[1, 1] = np.mean(res_arr[:, 4])  # Poly Mean % Error
+
+    res_stats[2, 0] = np.sqrt(np.var(res_arr[:, 0]-res_arr[:, 2])) # Linear STD
+    res_stats[2, 1] = np.sqrt(np.var(res_arr[:, 1]-res_arr[:, 2])) # Poly STD
+    res_stats[3, 0] = np.sqrt(np.var(res_arr[:, 3])) # Linear % STD
+    res_stats[3, 1] = np.sqrt(np.var(res_arr[:, 4]))  # Poly % STD
+
+
+    print("Linear Regression Results:")
+    print("Mean Error: " + str(res_stats[0, 0]))
+    print("Percent Mean Error: " + str(res_stats[1, 0]))
+    print("Standard Deviation: " + str(res_stats[2, 0]))
+    print("Percent Standard Deviation: "+ str(res_stats[3, 0]))
+    print(" ")
+    print("Polynomial Regression Results:")
+    print("Mean Error: " + str(res_stats[0, 1]))
+    print("Percent Mean Error: " + str(res_stats[1, 1]))
+    print("Standard Deviation: " + str(res_stats[2, 1]))
+    print("Percent Standard Deviation: "+ str(res_stats[3, 1]))
+    a = "line used to place break statement"
+
+    Output_Calls.plot_pitch(songs[index].chroma_cq)
+
+    #---------OLD CODE---------
+
     # plot
     # plt.scatter(1, np.dot(theta, processing.monomialize_single(test1)), color='red')
     #plt.savefig("plot.png")
@@ -167,7 +206,6 @@ if __name__ == '__main__':
     # print(np.dot(theta, test1))
     # print(np.dot(theta, test2))
 
-    #---------OLD CODE---------
     #p1 = Pipeline(song_name, file_path)
     #p1.list_sound_objects[:].song_name
     #p1.save_sound_objects()
