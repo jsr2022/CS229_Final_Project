@@ -229,11 +229,12 @@ class Pipeline(object):
 
         num_train = np.int(np.floor(indices.shape[0]*train_percent/100))
         num_test = indices.shape[0] - num_train
-        permutes = np.random.permutation(np.int(indices.shape[0]))
+        permutes = np.random.RandomState(seed=1).permutation(np.int(indices.shape[0]))
         indices_to_train = permutes[0:num_train]
         indices_to_test = permutes[num_train:]
         train_indices = indices[indices_to_train].astype(int)
         test_indices = indices[indices_to_test].astype(int)
+
 
         #test_indices = set(indices.flatten()) - set(train_indices)
         #test_indices = np.array(test_indices)
